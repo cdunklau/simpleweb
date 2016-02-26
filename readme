@@ -1,1 +1,10 @@
-Super basic sorta-twitter-clone
+Simple web framework.
+
+Inspired somewhat by Pyramid (http://www.pylonsproject.org/)
+
+
+Goals:
+
+- Basic routing
+- Pluggable renderers
+- Nicer request object than Node.js's low-level http.IncomingMessage
