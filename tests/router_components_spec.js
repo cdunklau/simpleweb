@@ -87,10 +87,18 @@ describe("RouteTree's", function() {
       expect(fix.a.route).toBe(newRoute);
     });
 
+    xit("adds the route into the names map", function() {
+
+    });
+
     it("throws if the route specified already exists", function() {
       fix.a.route = new Route('exists', '/a', function() {});
       var newRoute = new Route('new', '/a', function() {});
       expect(fix.tree.addRoute.bind(fix.tree, newRoute)).toThrow();
+    });
+
+    xit("throws if the route name was already used", function() {
+      
     });
   });
 
