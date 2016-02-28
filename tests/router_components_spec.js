@@ -33,28 +33,38 @@ describe("The parseRoutePattern function", function() {
 });
 
 
+var makeTree = function makeTree() {
+  tree = new RouteTree();
+  a = new RouteTreeNode('a', tree.root);
+  tree.root.children.set('a', a);
+  a_aa = new RouteTreeNode('aa', a);
+  a.children.set('aa', a_aa);
+  return {
+    tree: tree,
+    root: tree.root,
+    a: a,
+    a_aa: a_aa
+  };
+};
+
+
 describe("RouteTree's", function() {
   describe("getNodePath method", function() {
-    var tree;
-    var a, a_aa;
+    var fix;
     beforeEach(function() {
-      tree = new RouteTree();
-      a = new RouteTreeNode('a', tree.root);
-      tree.root.children.set('a', a);
-      a_aa = new RouteTreeNode('aa', a);
-      a.children.set('aa', a_aa);
+      fix = makeTree();
     });
 
     it("returns a slash for the root node", function() {
-      expect(tree.getNodePath(tree.root)).toBe('/');
+      expect(fix.tree.getNodePath(fix.root)).toBe('/');
     });
 
     it("returns the first level path", function() {
-      expect(tree.getNodePath(a)).toBe('/a');
+      expect(fix.tree.getNodePath(fix.a)).toBe('/a');
     });
 
     it("returns the second level path", function() {
-      expect(tree.getNodePath(a_aa)).toBe('/a/aa');
+      expect(fix.tree.getNodePath(fix.a_aa)).toBe('/a/aa');
     });
   });
 
@@ -63,76 +73,66 @@ describe("RouteTree's", function() {
   });
 
   describe("resolvePath method", function() {
-    var tree;
-    var a, a_aa;
+    var fix;
     beforeEach(function() {
-      tree = new RouteTree();
-      a = new RouteTreeNode('a', tree.root);
-      tree.root.children.set('a', a);
-      a_aa = new RouteTreeNode('aa', a);
-      a.children.set('aa', a_aa);
+      fix = makeTree();
     });
 
     it("returns the root node for an empty stack", function() {
-      expect(tree.resolvePath([])).toBe(tree.root);
+      expect(fix.tree.resolvePath([])).toBe(fix.root);
     });
 
     it("returns the root node with the remainder in the stack", function() {
       var stack = ['notintree'];
-      expect(tree.resolvePath(stack)).toBe(tree.root);
+      expect(fix.tree.resolvePath(stack)).toBe(fix.root);
       expect(stack).toEqual(['notintree']);
     });
 
     it("returns a child node as requested and exhausts the stack", function() {
       var stack = ['a'];
-      expect(tree.resolvePath(stack)).toBe(a);
+      expect(fix.tree.resolvePath(stack)).toBe(fix.a);
       expect(stack).toEqual([]);
     });
 
     it("returns a deeper child node as requested and exhausts the stack", function() {
       var stack = ['a', 'aa'].reverse();
-      expect(tree.resolvePath(stack)).toBe(a_aa);
+      expect(fix.tree.resolvePath(stack)).toBe(fix.a_aa);
       expect(stack).toEqual([]);
     });
 
     it("returns a child node with the remainder in the stack", function() {
       var stack = ['a', 'notintree'].reverse();
-      expect(tree.resolvePath(stack)).toBe(a);
+      expect(fix.tree.resolvePath(stack)).toBe(fix.a);
       expect(stack).toEqual(['notintree']);
     });
   });
 
   describe("addRemainingPath method", function() {
-    var tree;
-    var a, a_aa;
+    var fix;
     beforeEach(function() {
-      tree = new RouteTree();
-      a = new RouteTreeNode('a', tree.root);
-      tree.root.children.set('a', a);
-      a_aa = new RouteTreeNode('aa', a);
-      a.children.set('aa', a_aa);
+      fix = makeTree();
     });
 
     it("returns the same node given if the stack is empty", function() {
-      expect(tree.addRemainingPath(tree.root, [])).toBe(tree.root);
-      expect(tree.addRemainingPath(a, [])).toBe(a);
+      expect(fix.tree.addRemainingPath(fix.root, [])).toBe(fix.root);
+      expect(fix.tree.addRemainingPath(fix.a, [])).toBe(a);
     });
 
     it("throws if the child node exists", function() {
-      expect(tree.addRemainingPath.bind(tree, tree.root, ['a'])).toThrow();
+      expect(fix.tree.addRemainingPath.bind(fix.tree, fix.root, ['a'])).toThrow();
     });
 
     it("returns the next node created and exhausts the stack", function() {
       var stack = ['ab'];
-      var newNode = tree.addRemainingPath(a, stack);
-      expect(newNode.parent).toBe(a);
+      var newNode = fix.tree.addRemainingPath(fix.a, stack);
+      expect(newNode.parent).toBe(fix.a);
       expect(stack).toEqual([]);
     });
 
     it("returns the last node created and exhausts the stack", function() {
       var stack = ['aba', 'ab'];
-      var newNode = tree.addRemainingPath(a, stack);
-      expect(newNode.parent.parent).toBe(a);
+      var newNode = fix.tree.addRemainingPath(fix.a, stack);
+      expect(newNode.parent.parent).toBe(fix.a);
       expect(stack).toEqual([]);
     });
   });
