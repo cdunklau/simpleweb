@@ -1,6 +1,7 @@
 var parseRoutePattern = require('../lib/router/utils.js').parseRoutePattern;
 var RouteTree = require('../lib/router/RouteTree.js');
 var RouteTreeNode = require('../lib/router/RouteTreeNode.js');
+var Route = require('../lib/router/Route.js');
 
 
 describe("The parseRoutePattern function", function() {
@@ -69,7 +70,28 @@ describe("RouteTree's", function() {
   });
 
   describe("addRoute method", function() {
-    xit();
+    var fix;
+    beforeEach(function() {
+      fix = makeTree();
+    });
+
+    it("adds a route to the root", function() {
+      var newRoute = new Route('rootroute', '/', function() {});
+      fix.tree.addRoute(newRoute);
+      expect(fix.root.route).toBe(newRoute);
+    });
+
+    it("adds a route to a child", function() {
+      var newRoute = new Route('childroute', '/a', function() {});
+      fix.tree.addRoute(newRoute);
+      expect(fix.a.route).toBe(newRoute);
+    });
+
+    it("throws if the route specified already exists", function() {
+      fix.a.route = new Route('exists', '/a', function() {});
+      var newRoute = new Route('new', '/a', function() {});
+      expect(fix.tree.addRoute.bind(fix.tree, newRoute)).toThrow();
+    });
   });
 
   describe("resolvePath method", function() {
