@@ -66,10 +66,11 @@ describe("RouteTree's", function() {
     var tree;
     var a, a_aa;
     beforeEach(function() {
-      var N = RouteTreeNode;
       tree = new RouteTree();
-      a = tree.root.children.set('a', new N('a')).get('a');
-      a_aa = tree.root.children.get('a').children.set('aa', new N('aa')).get('aa');
+      a = new RouteTreeNode('a', tree.root);
+      tree.root.children.set('a', a);
+      a_aa = new RouteTreeNode('aa', a);
+      a.children.set('aa', a_aa);
     });
 
     it("returns the root node for an empty stack", function() {
@@ -105,10 +106,11 @@ describe("RouteTree's", function() {
     var tree;
     var a, a_aa;
     beforeEach(function() {
-      var N = RouteTreeNode;
       tree = new RouteTree();
-      a = tree.root.children.set('a', new N('a')).get('a');
-      a_aa = tree.root.children.get('a').children.set('aa', new N('aa')).get('aa');
+      a = new RouteTreeNode('a', tree.root);
+      tree.root.children.set('a', a);
+      a_aa = new RouteTreeNode('aa', a);
+      a.children.set('aa', a_aa);
     });
 
     it("returns the same node given if the stack is empty", function() {
