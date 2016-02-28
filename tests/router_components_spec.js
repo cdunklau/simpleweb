@@ -36,15 +36,15 @@ describe('The parseRoutePattern function', function() {
 
 var makeTree = function makeTree() {
   var tree = new RouteTree();
-  var a = new RouteTreeNode('a', tree.root);
-  tree.root.children.set('a', a);
-  var a_aa = new RouteTreeNode('aa', a);
-  a.children.set('aa', a_aa);
+  var child = new RouteTreeNode('child', tree.root);
+  tree.root.children.set('child', child);
+  var grandchild = new RouteTreeNode('grandchild', child);
+  child.children.set('grandchild', grandchild);
   return {
     tree: tree,
     root: tree.root,
-    a: a,
-    a_aa: a_aa
+    child: child,
+    grandchild: grandchild,
   };
 };
 
@@ -60,11 +60,13 @@ describe('The makeTree fixture function returns a object that', function() {
   });
 
   it('has the first child as an attribute', function() {
-    expect(fix.a).toBe(fix.tree.root.children.get('a'));
+    expect(fix.child).toBe(fix.tree.root.children.get('child'));
   });
 
   it('has the grandchild as an attribute', function() {
-    expect(fix.a_aa).toBe(fix.tree.root.children.get('a').children.get('aa'));
+    expect(fix.grandchild).toBe(
+      fix.tree.root.children.get('child').children.get('grandchild')
+    );
   });
 });
 
@@ -81,11 +83,11 @@ describe('RouteTree\'s', function() {
     });
 
     it('returns the first level path', function() {
-      expect(fix.tree.getNodePath(fix.a)).toBe('/a');
+      expect(fix.tree.getNodePath(fix.child)).toBe('/child');
     });
 
     it('returns the second level path', function() {
-      expect(fix.tree.getNodePath(fix.a_aa)).toBe('/a/aa');
+      expect(fix.tree.getNodePath(fix.grandchild)).toBe('/child/grandchild');
     });
   });
 
@@ -102,20 +104,20 @@ describe('RouteTree\'s', function() {
     });
 
     it('adds a route to a child', function() {
-      var newRoute = new Route('childroute', '/a', function() {});
+      var newRoute = new Route('childroute', '/child', function() {});
       fix.tree.addRoute(newRoute);
-      expect(fix.a.route).toBe(newRoute);
+      expect(fix.child.route).toBe(newRoute);
     });
 
     it('adds a route to a previously undefined node', function() {
-      var newRoute = new Route('grandchild', '/a/new', function() {});
+      var newRoute = new Route('grandchildroute', '/child/new', function() {});
       fix.tree.addRoute(newRoute);
-      expect(fix.a.children.get('new').route).toBe(newRoute);
+      expect(fix.child.children.get('new').route).toBe(newRoute);
     });
 
     it('adds multiple routes', function() {
-      var rootRoute = new Route('root', '/', function() {});
-      var childRoute = new Route('child', '/child', function() {});
+      var rootRoute = new Route('rootroute', '/', function() {});
+      var childRoute = new Route('childroute', '/child', function() {});
       fix.tree.addRoute(rootRoute);
       fix.tree.addRoute(childRoute);
       expect(fix.root.route).toBe(rootRoute);
@@ -123,17 +125,17 @@ describe('RouteTree\'s', function() {
     });
 
     it('adds routes into the names map', function() {
-      var rootRoute = new Route('root', '/', function() {});
-      var childRoute = new Route('child', '/child', function() {});
+      var rootRoute = new Route('rootroute', '/', function() {});
+      var childRoute = new Route('childroute', '/child', function() {});
       fix.tree.addRoute(rootRoute);
       fix.tree.addRoute(childRoute);
-      expect(fix.tree.routesByNames.get('root')).toBe(rootRoute);
-      expect(fix.tree.routesByNames.get('child')).toBe(childRoute);
+      expect(fix.tree.routesByNames.get('rootroute')).toBe(rootRoute);
+      expect(fix.tree.routesByNames.get('childroute')).toBe(childRoute);
     });
 
     it('throws if a route already exists at the node specified', function() {
-      fix.a.route = new Route('exists', '/a', function() {});
-      var newRoute = new Route('new', '/a', function() {});
+      fix.child.route = new Route('exists', '/child', function() {});
+      var newRoute = new Route('new', '/child', function() {});
       expect(fix.tree.addRoute.bind(fix.tree, newRoute)).
             toThrowError(/Route already exists at/);
     });
@@ -163,20 +165,22 @@ describe('RouteTree\'s', function() {
     });
 
     it('returns a child node as requested and exhausts the stack', function() {
-      var stack = ['a'];
-      expect(fix.tree.resolvePath(stack)).toBe(fix.a);
+      var stack = ['child'];
+      expect(fix.tree.resolvePath(stack)).toBe(fix.child);
       expect(stack).toEqual([]);
     });
 
-    it('returns a deeper child node as requested and exhausts the stack', function() {
-      var stack = ['a', 'aa'].reverse();
-      expect(fix.tree.resolvePath(stack)).toBe(fix.a_aa);
+    it(
+          'returns a deeper child node as requested and exhausts the stack',
+          function() {
+      var stack = ['child', 'grandchild'].reverse();
+      expect(fix.tree.resolvePath(stack)).toBe(fix.grandchild);
       expect(stack).toEqual([]);
     });
 
     it('returns a child node with the remainder in the stack', function() {
-      var stack = ['a', 'notintree'].reverse();
-      expect(fix.tree.resolvePath(stack)).toBe(fix.a);
+      var stack = ['child', 'notintree'].reverse();
+      expect(fix.tree.resolvePath(stack)).toBe(fix.child);
       expect(stack).toEqual(['notintree']);
     });
   });
@@ -189,11 +193,12 @@ describe('RouteTree\'s', function() {
 
     it('returns the same node given if the stack is empty', function() {
       expect(fix.tree.addRemainingPath(fix.root, [])).toBe(fix.root);
-      expect(fix.tree.addRemainingPath(fix.a, [])).toBe(fix.a);
+      expect(fix.tree.addRemainingPath(fix.child, [])).toBe(fix.child);
     });
 
     it('throws if the child node exists', function() {
-      expect(fix.tree.addRemainingPath.bind(fix.tree, fix.root, ['a'])).toThrow();
+      expect(fix.tree.addRemainingPath.bind(fix.tree, fix.root, ['child'])).
+            toThrow();
     });
 
     it('adds the child node with the correct path component name', function() {
@@ -203,16 +208,16 @@ describe('RouteTree\'s', function() {
     });
 
     it('returns the next node created and exhausts the stack', function() {
-      var stack = ['ab'];
-      var newNode = fix.tree.addRemainingPath(fix.a, stack);
-      expect(newNode.parent).toBe(fix.a);
+      var stack = ['newgrandchild'];
+      var newNode = fix.tree.addRemainingPath(fix.child, stack);
+      expect(newNode.parent).toBe(fix.child);
       expect(stack).toEqual([]);
     });
 
     it('returns the last node created and exhausts the stack', function() {
-      var stack = ['aba', 'ab'];
-      var newNode = fix.tree.addRemainingPath(fix.a, stack);
-      expect(newNode.parent.parent).toBe(fix.a);
+      var stack = ['newgreatgrandchild', 'newgrandchild'];
+      var newNode = fix.tree.addRemainingPath(fix.child, stack);
+      expect(newNode.parent.parent).toBe(fix.child);
       expect(stack).toEqual([]);
     });
   });
