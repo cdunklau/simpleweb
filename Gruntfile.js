@@ -2,8 +2,19 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
-      options: {},
-      tests: {src: 'tests'},
+      options: {
+        esversion: 6,
+        undef: true,
+        curly: true,
+        eqeqeq: true,
+        node: true
+      },
+      tests: {
+        options: {
+          jasmine: true
+        },
+        src: 'tests'
+      },
       lib: {src: 'lib'},
       demo: {src: 'demo'},
       meta: {src: ['package.json', 'Gruntfile.js']}
