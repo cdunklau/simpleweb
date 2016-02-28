@@ -4,7 +4,7 @@ describe("Router's", function() {
   describe("addRoute method", function() {
     xit();
   });
-  describe("findRoute method", function() {
+  describe("findMatchingRoute method", function() {
     xit();
   });
 });
