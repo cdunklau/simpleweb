@@ -31,7 +31,25 @@ describe("The parseRoutePattern function", function() {
 });
 
 
+describe("Router's", function() {
+  describe("addRoute method", function() {
+    xit();
+  });
+  describe("findRoute method", function() {
+    xit();
+  });
+});
+
+
 describe("RouteTree's", function() {
+  describe("getNodePath method", function() {
+    xit();
+  });
+
+  describe("addRoute method", function() {
+    xit();
+  });
+
   describe("resolvePath method", function() {
     var tree;
     var a, a_aa;
@@ -71,7 +89,6 @@ describe("RouteTree's", function() {
     });
   });
 
-
   describe("addRemainingPath method", function() {
     var tree;
     var a, a_aa;
@@ -91,8 +108,18 @@ describe("RouteTree's", function() {
       expect(tree.addRemainingPath.bind(tree, tree.root, ['a'])).toThrow();
     });
 
-    xit("returns the last node created", function() {
-      //TODO
+    it("returns the next node created and exhausts the stack", function() {
+      var stack = ['ab'];
+      var newNode = tree.addRemainingPath(a, stack);
+      expect(newNode.parent).toBe(a);
+      expect(stack).toEqual([]);
+    });
+
+    it("returns the last node created and exhausts the stack", function() {
+      var stack = ['aba', 'ab'];
+      var newNode = tree.addRemainingPath(a, stack);
+      expect(newNode.parent.parent).toBe(a);
+      expect(stack).toEqual([]);
     });
   });
 
