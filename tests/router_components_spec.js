@@ -35,7 +35,27 @@ describe("The parseRoutePattern function", function() {
 
 describe("RouteTree's", function() {
   describe("getNodePath method", function() {
-    xit();
+    var tree;
+    var a, a_aa;
+    beforeEach(function() {
+      tree = new RouteTree();
+      a = new RouteTreeNode('a', tree.root);
+      tree.root.children.set('a', a);
+      a_aa = new RouteTreeNode('aa', a);
+      a.children.set('aa', a_aa);
+    });
+
+    it("returns a slash for the root node", function() {
+      expect(tree.getNodePath(tree.root)).toBe('/');
+    });
+
+    it("returns the first level path", function() {
+      expect(tree.getNodePath(a)).toBe('/a');
+    });
+
+    it("returns the second level path", function() {
+      expect(tree.getNodePath(a_aa)).toBe('/a/aa');
+    });
   });
 
   describe("addRoute method", function() {
