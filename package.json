@@ -2,12 +2,12 @@
   "name": "simpleweb",
   "version": "0.1.0",
   "description": "Simple demonstration web framework",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^1.0.0",
-    "grunt-jasmine-nodejs": "^1.4.3"
+    "grunt-jasmine-nodejs": "^1.4.3",
+    "grunt-jscs": "^2.7.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
