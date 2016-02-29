@@ -4,6 +4,14 @@ module.exports = function(grunt) {
     jscs: {
       options: {
         preset: 'node-style-guide',
+        jsDoc: {
+          checkAnnotations: 'jsdoc3',
+          checkParamExistence: true,
+          checkTypes: 'strictNativeCase',
+          enforceExistence: {
+            allExcept: ['exports'],
+          },
+        },
       },
       src: ['lib', 'tests', 'demo', 'Gruntfile.js'],
     },

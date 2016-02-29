@@ -5,8 +5,16 @@ var Route = require('../lib/router/Route.js');
 
 
 describe('The parseRoutePattern function', function() {
-  var parseResultEquals = function parseResultEquals(input, expectedResult) {
-    expect(parseRoutePattern(input)).toEqual(expectedResult);
+  /**
+   * Expect that the input is parsed into the expectedResult
+   *
+   * @param {string} routePattern - the URL pattern to parse
+   * @param {Array} expectedResult - the expected array of parts
+   */
+  var parseResultEquals = function parseResultEquals(
+          routePattern, expectedResult
+  ) {
+    expect(parseRoutePattern(routePattern)).toEqual(expectedResult);
   };
 
   it('returns an empty array for empty patterns', function() {
@@ -34,6 +42,9 @@ describe('The parseRoutePattern function', function() {
 });
 
 
+/**
+ * Helper to make a small RouteTree structure for tests
+ */
 var makeTree = function makeTree() {
   var tree = new RouteTree();
   var child = new RouteTreeNode('child', tree.root);
