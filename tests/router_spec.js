@@ -1,10 +1,15 @@
-var Router = require('../lib/router');
+'use strict';
+let Router = require('../lib/router');
 
-
-var fakeView = function fakeView(request) {};
+/**
+ * A dummy view
+ *
+ * @param {Object} request - the request (but don't call it)
+ */
+let fakeView = function fakeView(request) {};
 
 describe('A Router object', function() {
-  var router;
+  let router;
   beforeEach(function() {
     router = new Router();
     router.addRoute('index', '/', fakeView);
@@ -34,7 +39,7 @@ describe('A Router object', function() {
 
   it('resolves a URL path matching a replacement marker', function() {
     router.addRoute('posts:detail', '/posts/{postId}', fakeView);
-    var match = router.getMatch('/posts/123');
+    let match = router.getMatch('/posts/123');
     expect(match.route.name).toBe('posts:detail');
     expect(match.fields).toEqual({postId: '123',});
   });
@@ -43,7 +48,7 @@ describe('A Router object', function() {
     router.addRoute(
       'posts:detail', '/posts/{postId}/history/{revision}', fakeView
     );
-    var match = router.getMatch('/posts/123/history/456');
+    let match = router.getMatch('/posts/123/history/456');
     expect(match.route.name).toBe('posts:detail');
     expect(match.fields).toEqual({postId: '123', revision: '456',});
   });
@@ -52,7 +57,7 @@ describe('A Router object', function() {
            'same path component', function() {
     router.addRoute('people:multiformat', '/api/people/{personId}.{ext}',
                     fakeView);
-    var match = router.getMatch('/api/people/123.json');
+    let match = router.getMatch('/api/people/123.json');
     expect(match.route.name).toBe('people:multiformat');
     expect(match.fields).toEqual({personId: '123', ext: 'json',});
   });

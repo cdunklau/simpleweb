@@ -1,7 +1,8 @@
-var parseRoutePattern = require('../lib/router/utils.js').parseRoutePattern;
-var RouteTree = require('../lib/router/RouteTree.js');
-var RouteTreeNode = require('../lib/router/RouteTreeNode.js');
-var Route = require('../lib/router/Route.js');
+'use strict';
+let parseRoutePattern = require('../lib/router/utils.js').parseRoutePattern;
+let RouteTree = require('../lib/router/RouteTree.js');
+let RouteTreeNode = require('../lib/router/RouteTreeNode.js');
+let Route = require('../lib/router/Route.js');
 
 
 describe('The parseRoutePattern function', function() {
@@ -11,7 +12,7 @@ describe('The parseRoutePattern function', function() {
    * @param {string} routePattern - the URL pattern to parse
    * @param {Array} expectedResult - the expected array of parts
    */
-  var parseResultEquals = function parseResultEquals(
+  let parseResultEquals = function parseResultEquals(
           routePattern, expectedResult
   ) {
     expect(parseRoutePattern(routePattern)).toEqual(expectedResult);
@@ -45,11 +46,11 @@ describe('The parseRoutePattern function', function() {
 /**
  * Helper to make a small RouteTree structure for tests
  */
-var makeTree = function makeTree() {
-  var tree = new RouteTree();
-  var child = new RouteTreeNode('child', tree.root);
+let makeTree = function makeTree() {
+  let tree = new RouteTree();
+  let child = new RouteTreeNode('child', tree.root);
   tree.root.children.set('child', child);
-  var grandchild = new RouteTreeNode('grandchild', child);
+  let grandchild = new RouteTreeNode('grandchild', child);
   child.children.set('grandchild', grandchild);
   return {
     tree: tree,
@@ -61,7 +62,7 @@ var makeTree = function makeTree() {
 
 
 describe('The makeTree fixture function returns a object that', function() {
-  var fix;
+  let fix;
   beforeEach(function() {
     fix = makeTree();
   });
@@ -84,7 +85,7 @@ describe('The makeTree fixture function returns a object that', function() {
 
 describe('RouteTree\'s', function() {
   describe('getNodePath method', function() {
-    var fix;
+    let fix;
     beforeEach(function() {
       fix = makeTree();
     });
@@ -103,32 +104,32 @@ describe('RouteTree\'s', function() {
   });
 
   describe('addRoute method', function() {
-    var fix;
+    let fix;
     beforeEach(function() {
       fix = makeTree();
     });
 
     it('adds a route to the root', function() {
-      var newRoute = new Route('rootroute', '/', function() {});
+      let newRoute = new Route('rootroute', '/', function() {});
       fix.tree.addRoute(newRoute);
       expect(fix.root.route).toBe(newRoute);
     });
 
     it('adds a route to a child', function() {
-      var newRoute = new Route('childroute', '/child', function() {});
+      let newRoute = new Route('childroute', '/child', function() {});
       fix.tree.addRoute(newRoute);
       expect(fix.child.route).toBe(newRoute);
     });
 
     it('adds a route to a previously undefined node', function() {
-      var newRoute = new Route('grandchildroute', '/child/new', function() {});
+      let newRoute = new Route('grandchildroute', '/child/new', function() {});
       fix.tree.addRoute(newRoute);
       expect(fix.child.children.get('new').route).toBe(newRoute);
     });
 
     it('adds multiple routes', function() {
-      var rootRoute = new Route('rootroute', '/', function() {});
-      var childRoute = new Route('childroute', '/child', function() {});
+      let rootRoute = new Route('rootroute', '/', function() {});
+      let childRoute = new Route('childroute', '/child', function() {});
       fix.tree.addRoute(rootRoute);
       fix.tree.addRoute(childRoute);
       expect(fix.root.route).toBe(rootRoute);
@@ -136,8 +137,8 @@ describe('RouteTree\'s', function() {
     });
 
     it('adds routes into the names map', function() {
-      var rootRoute = new Route('rootroute', '/', function() {});
-      var childRoute = new Route('childroute', '/child', function() {});
+      let rootRoute = new Route('rootroute', '/', function() {});
+      let childRoute = new Route('childroute', '/child', function() {});
       fix.tree.addRoute(rootRoute);
       fix.tree.addRoute(childRoute);
       expect(fix.tree.routesByNames.get('rootroute')).toBe(rootRoute);
@@ -146,21 +147,21 @@ describe('RouteTree\'s', function() {
 
     it('throws if a route already exists at the node specified', function() {
       fix.child.route = new Route('exists', '/child', function() {});
-      var newRoute = new Route('new', '/child', function() {});
+      let newRoute = new Route('new', '/child', function() {});
       expect(fix.tree.addRoute.bind(fix.tree, newRoute)).
             toThrowError(/Route already exists at/);
     });
 
     it('throws if the route name was already used', function() {
       fix.tree.addRoute(new Route('sameName', '/location', function() {}));
-      var newRoute = new Route('sameName', '/otherLocation', function() {});
+      let newRoute = new Route('sameName', '/otherLocation', function() {});
       expect(fix.tree.addRoute.bind(fix.tree, newRoute)).
             toThrowError(/Route already exists with name/);
     });
   });
 
   describe('resolvePath method', function() {
-    var fix;
+    let fix;
     beforeEach(function() {
       fix = makeTree();
     });
@@ -170,13 +171,13 @@ describe('RouteTree\'s', function() {
     });
 
     it('returns the root node with the remainder in the stack', function() {
-      var stack = ['notintree'];
+      let stack = ['notintree'];
       expect(fix.tree.resolvePath(stack)).toBe(fix.root);
       expect(stack).toEqual(['notintree']);
     });
 
     it('returns a child node as requested and exhausts the stack', function() {
-      var stack = ['child'];
+      let stack = ['child'];
       expect(fix.tree.resolvePath(stack)).toBe(fix.child);
       expect(stack).toEqual([]);
     });
@@ -184,20 +185,20 @@ describe('RouteTree\'s', function() {
     it(
           'returns a deeper child node as requested and exhausts the stack',
           function() {
-      var stack = ['child', 'grandchild'].reverse();
+      let stack = ['child', 'grandchild'].reverse();
       expect(fix.tree.resolvePath(stack)).toBe(fix.grandchild);
       expect(stack).toEqual([]);
     });
 
     it('returns a child node with the remainder in the stack', function() {
-      var stack = ['child', 'notintree'].reverse();
+      let stack = ['child', 'notintree'].reverse();
       expect(fix.tree.resolvePath(stack)).toBe(fix.child);
       expect(stack).toEqual(['notintree']);
     });
   });
 
   describe('addRemainingPath method', function() {
-    var fix;
+    let fix;
     beforeEach(function() {
       fix = makeTree();
     });
@@ -213,21 +214,21 @@ describe('RouteTree\'s', function() {
     });
 
     it('adds the child node with the correct path component name', function() {
-      var leafNode = fix.tree.addRemainingPath(fix.root, ['new']);
+      let leafNode = fix.tree.addRemainingPath(fix.root, ['new']);
       expect(leafNode.pathComponent).toBe('new');
       expect(fix.root.children.get('new')).toBe(leafNode);
     });
 
     it('returns the next node created and exhausts the stack', function() {
-      var stack = ['newgrandchild'];
-      var newNode = fix.tree.addRemainingPath(fix.child, stack);
+      let stack = ['newgrandchild'];
+      let newNode = fix.tree.addRemainingPath(fix.child, stack);
       expect(newNode.parent).toBe(fix.child);
       expect(stack).toEqual([]);
     });
 
     it('returns the last node created and exhausts the stack', function() {
-      var stack = ['newgreatgrandchild', 'newgrandchild'];
-      var newNode = fix.tree.addRemainingPath(fix.child, stack);
+      let stack = ['newgreatgrandchild', 'newgrandchild'];
+      let newNode = fix.tree.addRemainingPath(fix.child, stack);
       expect(newNode.parent.parent).toBe(fix.child);
       expect(stack).toEqual([]);
     });
