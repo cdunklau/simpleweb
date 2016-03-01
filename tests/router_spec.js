@@ -6,7 +6,7 @@ let Router = require('../lib/router');
  *
  * @param {Object} request - the request (but don't call it)
  */
-let fakeView = function fakeView(request) {};
+let fakeView = function(request) {};
 
 describe('A Router object', function() {
   let router;

@@ -12,7 +12,7 @@ describe('The parseRoutePattern function', function() {
    * @param {string} routePattern - the URL pattern to parse
    * @param {Array} expectedResult - the expected array of parts
    */
-  let parseResultEquals = function parseResultEquals(
+  let parseResultEquals = function(
           routePattern, expectedResult
   ) {
     expect(parseRoutePattern(routePattern)).toEqual(expectedResult);
@@ -46,7 +46,7 @@ describe('The parseRoutePattern function', function() {
 /**
  * Helper to make a small RouteTree structure for tests
  */
-let makeTree = function makeTree() {
+let makeTree = function() {
   let tree = new RouteTree();
   let child = new RouteTreeNode('child', tree.root);
   tree.root.children.set('child', child);
