@@ -37,14 +37,14 @@ describe('A Router object', function() {
           toThrowError(/Route already exists at/);
   });
 
-  it('resolves a URL path matching a replacement marker', function() {
+  xit('resolves a URL path matching a replacement marker', function() {
     router.addRoute('posts:detail', '/posts/{postId}', fakeView);
     let match = router.getMatch('/posts/123');
     expect(match.route.name).toBe('posts:detail');
     expect(match.fields).toEqual({postId: '123',});
   });
 
-  it('resolves a URL path matching multiple replacement markers', function() {
+  xit('resolves a URL path matching multiple replacement markers', function() {
     router.addRoute(
       'posts:detail', '/posts/{postId}/history/{revision}', fakeView
     );
@@ -53,7 +53,7 @@ describe('A Router object', function() {
     expect(match.fields).toEqual({postId: '123', revision: '456',});
   });
 
-  it('resolves a URL path matching multiple replacement markers in the ' +
+  xit('resolves a URL path matching multiple replacement markers in the ' +
            'same path component', function() {
     router.addRoute('people:multiformat', '/api/people/{personId}.{ext}',
                     fakeView);
@@ -62,7 +62,7 @@ describe('A Router object', function() {
     expect(match.fields).toEqual({personId: '123', ext: 'json',});
   });
 
-  it('throws if replacement markers conflict', function() {
+  xit('throws if replacement markers conflict', function() {
     expect(
       router.addRoute.bind(
         router, 'posts:edit', '/posts/{postId}/{postId}', fakeView
