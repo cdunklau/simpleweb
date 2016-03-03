@@ -1,5 +1,5 @@
 'use strict';
-let Router = require('../lib/router');
+let createRouter = require('../lib/router');
 
 /**
  * A dummy view
@@ -11,7 +11,7 @@ let fakeView = function(request) {};
 describe('A Router object', function() {
   let router;
   beforeEach(function() {
-    router = new Router();
+    router = createRouter();
     router.addRoute('index', '/', fakeView);
     router.addRoute('posts:index', '/posts', fakeView);
   });
