@@ -1,8 +1,8 @@
 'use strict';
 let parseRoutePattern = require('../lib/router/utils.js').parseRoutePattern;
 let RouteTree = require('../lib/router/RouteTree.js');
-let RouteTreeNode = require('../lib/router/RouteTreeNode.js');
-let Route = require('../lib/router/Route.js');
+let createRouteTreeNode = require('../lib/router/RouteTreeNode.js');
+let createRoute = require('../lib/router/Route.js');
 
 
 describe('The parseRoutePattern function', function() {
@@ -48,9 +48,9 @@ describe('The parseRoutePattern function', function() {
  */
 let makeTree = function() {
   let tree = new RouteTree();
-  let child = new RouteTreeNode('child', tree.root);
+  let child = createRouteTreeNode('child', tree.root);
   tree.root.children.set('child', child);
-  let grandchild = new RouteTreeNode('grandchild', child);
+  let grandchild = createRouteTreeNode('grandchild', child);
   child.children.set('grandchild', grandchild);
   return {
     tree: tree,
@@ -110,26 +110,28 @@ describe('RouteTree\'s', function() {
     });
 
     it('adds a route to the root', function() {
-      let newRoute = new Route('rootroute', '/', function() {});
+      let newRoute = createRoute('rootroute', '/', function() {});
       fix.tree.addRoute(newRoute);
       expect(fix.root.route).toBe(newRoute);
     });
 
     it('adds a route to a child', function() {
-      let newRoute = new Route('childroute', '/child', function() {});
+      let newRoute = createRoute('childroute', '/child', function() {});
       fix.tree.addRoute(newRoute);
       expect(fix.child.route).toBe(newRoute);
     });
 
     it('adds a route to a previously undefined node', function() {
-      let newRoute = new Route('grandchildroute', '/child/new', function() {});
+      let newRoute = createRoute(
+              'grandchildroute', '/child/new', function() {}
+      );
       fix.tree.addRoute(newRoute);
       expect(fix.child.children.get('new').route).toBe(newRoute);
     });
 
     it('adds multiple routes', function() {
-      let rootRoute = new Route('rootroute', '/', function() {});
-      let childRoute = new Route('childroute', '/child', function() {});
+      let rootRoute = createRoute('rootroute', '/', function() {});
+      let childRoute = createRoute('childroute', '/child', function() {});
       fix.tree.addRoute(rootRoute);
       fix.tree.addRoute(childRoute);
       expect(fix.root.route).toBe(rootRoute);
@@ -137,8 +139,8 @@ describe('RouteTree\'s', function() {
     });
 
     it('adds routes into the names map', function() {
-      let rootRoute = new Route('rootroute', '/', function() {});
-      let childRoute = new Route('childroute', '/child', function() {});
+      let rootRoute = createRoute('rootroute', '/', function() {});
+      let childRoute = createRoute('childroute', '/child', function() {});
       fix.tree.addRoute(rootRoute);
       fix.tree.addRoute(childRoute);
       expect(fix.tree.routesByNames.get('rootroute')).toBe(rootRoute);
@@ -146,15 +148,15 @@ describe('RouteTree\'s', function() {
     });
 
     it('throws if a route already exists at the node specified', function() {
-      fix.child.route = new Route('exists', '/child', function() {});
-      let newRoute = new Route('new', '/child', function() {});
+      fix.child.route = createRoute('exists', '/child', function() {});
+      let newRoute = createRoute('new', '/child', function() {});
       expect(fix.tree.addRoute.bind(fix.tree, newRoute)).
             toThrowError(/Route already exists at/);
     });
 
     it('throws if the route name was already used', function() {
-      fix.tree.addRoute(new Route('sameName', '/location', function() {}));
-      let newRoute = new Route('sameName', '/otherLocation', function() {});
+      fix.tree.addRoute(createRoute('sameName', '/location', function() {}));
+      let newRoute = createRoute('sameName', '/otherLocation', function() {});
       expect(fix.tree.addRoute.bind(fix.tree, newRoute)).
             toThrowError(/Route already exists with name/);
     });
