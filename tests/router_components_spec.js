@@ -1,8 +1,8 @@
 'use strict';
-let parseRoutePattern = require('../lib/router/utils.js').parseRoutePattern;
-let createRouteTree = require('../lib/router/RouteTree.js');
-let createRouteTreeNode = require('../lib/router/RouteTreeNode.js');
-let createRoute = require('../lib/router/Route.js');
+let parseRoutePattern = require('../lib/router.js').parseRoutePattern;
+let createRouteTree = require('../lib/router.js').createRouteTree;
+let createRouteTreeNode = require('../lib/router.js').createRouteTreeNode;
+let createRoute = require('../lib/router.js').createRoute;
 
 
 describe('The parseRoutePattern function', function() {

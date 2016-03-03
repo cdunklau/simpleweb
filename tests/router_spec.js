@@ -1,5 +1,5 @@
 'use strict';
-let createRouter = require('../lib/router');
+let createRouter = require('../lib/router.js').createRouter;
 
 /**
  * A dummy view
