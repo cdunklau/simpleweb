@@ -1,6 +1,6 @@
 'use strict';
 let parseRoutePattern = require('../lib/router/utils.js').parseRoutePattern;
-let RouteTree = require('../lib/router/RouteTree.js');
+let createRouteTree = require('../lib/router/RouteTree.js');
 let createRouteTreeNode = require('../lib/router/RouteTreeNode.js');
 let createRoute = require('../lib/router/Route.js');
 
@@ -47,7 +47,7 @@ describe('The parseRoutePattern function', function() {
  * Helper to make a small RouteTree structure for tests
  */
 let makeTree = function() {
-  let tree = new RouteTree();
+  let tree = createRouteTree();
   let child = createRouteTreeNode('child', tree.root);
   tree.root.children.set('child', child);
   let grandchild = createRouteTreeNode('grandchild', child);
